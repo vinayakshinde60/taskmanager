@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 5px 0 20px 0;
+            border: none;
+            background: #eee;
+        }
+
+        input:focus {
+            outline: none;
+            background: #e8e8e8;
+        }
+
+        button {
+            background-color: #04AA6D;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            opacity: 0.9;
+        }
+
+        button:hover {
+            opacity: 1;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Register</h2>
+        <form id="registerForm">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Register</button>
+            <div class="error" id="error-message"></div>
+            <div class="col-md-4">
+                <a href="/login.html">Click here to navigate to login screen</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('registerForm');
+        const errorMessage = document.getElementById('error-message');
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevent default form submission
+
+            const username = form.username.value;
+            const password = form.password.value;
+
+            // Basic client-side validation (you can add more)
+            if (username === '' || password === '') {
+                errorMessage.textContent = 'Please enter both username and password.';
+                return;
+            }
+
+            // Create registration request object
+            const registrationRequest = {
+                username: username,
+                password: password
+            };
+
+            // Send registration request to the backend
+            fetch('/api/v1/appuser/saveuser', { // Update with your actual registration endpoint
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(registrationRequest)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Registration failed');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Successful registration
+                // You might want to redirect to a success page or display a message
+                alert('Registration successful!');
+                form.reset();
+            })
+            .catch(error => {
+                console.error('Error during registration:', error);
+                errorMessage.textContent = 'An error occurred during registration. Please try again later.';
+            });
+        });
+    </script>
+</body>
+</html>
